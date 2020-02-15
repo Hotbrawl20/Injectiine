@@ -3,7 +3,6 @@ title Injectiine [NES]
 cls
 cd ..
 cd ..
-cd ..
 cd Files
 
 echo ::::::::::::::::::::
@@ -11,17 +10,14 @@ echo ::INJECTIINE [NES]::
 echo ::::::::::::::::::::
 SLEEP 3
 
-:: CHECK THAT FILES EXIST
-
 IF NOT EXIST *.nes GOTO:404ROMnotFound
 IF NOT EXIST bootTvTex.png GOTO:404ImagesNotFound
 IF NOT EXIST iconTex.png GOTO:404ImagesNotFound
 
 cd ..
 cd Tools
-cd CONSOLES
-cd NES
 
+:::::BASES:::::
 :BASE
 cls
 echo Which base do you want to use?
@@ -35,66 +31,11 @@ IF %BASEDECIDE%==2 GOTO:DH
 IF %BASEDECIDE%==3 GOTO:BaseNotice
 GOTO:BASE
 
-:BaseNotice
-cls
-echo Please supply your base, including the code, content and meta
-echo folders, in a directory called "Base" within the Files directory.
-echo.
-echo Press any key to continue.
-pause>NUL
-cd ..
-cd ..
-cd ..
-cd Files
-IF NOT EXIST Base GOTO:BASEFAIL
-cd ..
-cd Tools
-cd CONSOLES
-cd NES
-GOTO:EnterCommon
-
-:: ENTERING KEYS
-
-:WrongKeyPO
-cls
-echo Title key is incorrect. Please try again.
-SLEEP 2
-
-:EnterKeyPO
-cls
-
-IF EXIST TitleKeyPO.txt goto:EnterCommon
-echo This step will not be required the next time you start Injectiine.
-echo Enter the title key for Punch-Out!! (EUR):
-set /p TITLEKEY=
-echo %TITLEKEY:~0,32%>TitleKeyPO.txt
-set /p TITLEKEY=<TitleKeyPO.txt
-cls
-IF "%TitleKEY:~0,4%"=="ef15" GOTO:EnterCommon ELSE GOTO:WrongKeyPO
-
-:WrongKeyDH
-cls
-echo Title key is incorrect. Please try again.
-SLEEP 2
-
-:EnterKeyDH
-cls
-
-IF EXIST TitleKeyDH.txt goto:EnterCommon
-echo This step will not be required the next time you start Injectiine.
-echo Enter the title key for Duck Hunt (EUR):
-set /p TITLEKEY=
-echo %TITLEKEY:~0,32%>TitleKeyDH.txt
-set /p TITLEKEY=<TitleKeyDH.txt
-cls
-IF "%TitleKEY:~0,4%"=="f72a" GOTO:EnterCommon ELSE GOTO:WrongKeyDH
-
 :PO
 set BASEID=0005000010108c00
 set BASEPDC=FAKP
 set BASEFOLDER="Punch-Out!! [FAKP01]"
-IF EXIST TitleKeyPO.txt (set /p TITLEKEY=<TitleKeyPO.txt) ELSE (GOTO :EnterKeyPO)
-GOTO:EnterCommon
+GOTO:EnterKeyPO
 
 :DH
 cls
@@ -105,70 +46,88 @@ cls
 set BASEID=0005000010192600
 set BASEPDC=FEHP
 set BASEFOLDER="Duck Hunt [FEHP01]"
-IF EXIST TitleKeyDH.txt (set /p TITLEKEY=<TitleKeyDH.txt) ELSE (GOTO :EnterKeyDH)
-GOTO:EnterCommon
+goto:EnterKeyDH
 
-:WrongCommon
+
+:BaseNotice
 cls
-echo Wii U Common Key is incorrect. Please try again.
-SLEEP 2
+echo Please supply your base, including the code, content and meta
+echo folders, in a directory called "Base" within the Files directory.
+echo.
+echo Press any key to continue.
+pause>NUL
+cd ..
+cd Files
+IF NOT EXIST Base GOTO:BASEFAIL
+cd ..
+cd Tools
+GOTO:EnterCommon
+:::::END BASES:::::
 
 
-:: ENTERING KEYS
+:::::KEYS:::::
+:EnterKeyPO
+cls
+IF EXIST Keys/TK/TitleKeyPO goto:ReadKeyPO
+echo This step will not be required the next time you start Injectiine.
+echo Enter the title key for Punch-Out!! (EUR):
+set /p TITLEKEY=Enter TitleKey: 
+echo %TITLEKEY:~0,32%>Keys/TK/TitleKeyPO
+:ReadKeyPO
+set /p TITLEKEY=<Keys/TK/TitleKeyPO
+IF "%TitleKEY:~0,4%"=="ef15" GOTO:EnterCommon ELSE GOTO:WrongKeyPO
 
-GOTO:EnterKey
-:WrongKey
+:EnterKeyDH
+cls
+IF EXIST Keys/TK/TitleKeyDH goto:ReadKeyDH
+echo This step will not be required the next time you start Injectiine.
+echo Enter the title key for Duck Hunt (EUR):
+set /p TITLEKEY=Enter TitleKey: 
+echo %TITLEKEY:~0,32%>Keys/TK/TitleKeyDH
+:ReadKeyDH
+set /p TITLEKEY=<Keys/TK/TitleKeyDH
+cls
+IF "%TitleKEY:~0,4%"=="f72a" GOTO:EnterCommon ELSE GOTO:WrongKeyDH
+
+:EnterCommon
+IF EXIST Keys/commonKey goto:ReadCKey
+echo This step will not be required the next time you start Injectiine.
+set /p COMMON=Enter the Wii U Common Key: 
+set /p %COMMON:~0,32%>Keys/commonKey
+:ReadCKey
+set /p COMMON=<Keys/commonKey
+IF "%COMMON:~0,4%"=="D7B0" GOTO:EnterParameters ELSE GOTO:WrongCommon
+
+:::ERRORS:::
+:WrongKeyPO
 cls
 echo Title key is incorrect. Please try again.
 SLEEP 2
+goto:EnterKeyPO
 
-:EnterKey
+:WrongKeyDH
 cls
-
-IF EXIST TitleKey.txt goto:EnterCommon
-echo This step will not be required the next time you start Injectiine.
-echo Enter the title key for Punch-Out!! (EUR):
-set /p TITLEKEY=
-echo %TITLEKEY:~0,32%>TitleKey.txt
-set /p TITLEKEY=<TitleKey.txt
-cls
-IF "%TitleKEY:~0,4%"=="ef15" GOTO:EnterCommon ELSE GOTO:WrongKey
+echo Title key is incorrect. Please try again.
+SLEEP 2
+goto:EnterKeyDH
 
 :WrongCommon
 cls
 echo Wii U Common Key is incorrect. Please try again.
 SLEEP 2
+goto:EnterCommon
+:::END ERRORS:::
+:::::END KEYS:::::
 
-:EnterCommon
-cls
-IF EXIST NUSPacker/encryptKeyWith goto:EnterParameters
-cd NUSPacker
-echo This step will not be required the next time you start Injectiine.
-set /p COMMON=Enter the Wii U Common Key: 
-echo %COMMON:~0,32%>encryptKeyWith
-set /p COMMON=<encryptKeyWith
-cls
-cd ..
-echo http://ccs.cdn.wup.shop.nintendo.net/ccs/download>JNUSTool\config
-echo %COMMON:~0,32%>>JNUSTool\config
-echo https://tagaya.wup.shop.nintendo.net/tagaya/versionlist/EUR/EU/latest_version>>JNUSTool\config
-echo https://tagaya-wup.cdn.nintendo.net/tagaya/versionlist/EUR/EU/list/%d.versionlist>>JNUSTool\config
-IF "%COMMON:~0,4%"=="D7B0" GOTO:EnterParameters ELSE GOTO:WrongCommon
 
-:: ENTER PARAMETERS
-
+:::::PARAMETERS:::::
 :EnterParameters
 cls
 
 set TITLEID=%random:~-1%%random:~-1%%random:~-1%%random:~-1%
 
-:LineQuestion
-echo How many lines does your game name use?
-set /p LINEDECIDE=[1/2:] 
-echo.
-IF %LINEDECIDE%==1 GOTO:LINE1
-IF %LINEDECIDE%==2 GOTO:LINE2
-GOTO:LINEQUESTION
+
+GOTO:LINE1
 
 :LINE1
 echo Enter the name of the game.
@@ -176,18 +135,6 @@ set /p GAMENAME=[Game Name:]
 echo.
 GOTO:RestOfParameters
 
-:LINE2
-echo Enter a short version of the name of the game.
-set /p GAMENAME=[Short Game Name:] 
-echo.
-
-echo Enter the game name's first line.
-set /p GAMENAME1=[Game Name Line 1:] 
-echo.
-
-echo Enter the game name's second line.
-set /p GAMENAME2=[Game Name Line 2:] 
-echo.
 
 :RestOfParameters
 echo Enter a 4-digit product code.
@@ -202,16 +149,18 @@ IF /i "%TITLEDECIDE%"=="y" (
 echo Enter a 4-digit meta title ID. Must only be hex values.
 set /p TITLEID=[0-F:] 
 )
-cls
+goto:ConfirmParemeters
 
+:ConfirmParemeters
+cls
 echo Injectiine will now create an NES injection.
 echo If you don't accept this, you will need to reenter your parameters.
 CHOICE /C YN
 IF errorlevel 2 goto :EnterParameters
 IF errorlevel 1 goto :DownloadingStuff
+:::::END PARAMETERS:::::
 
-:: DOWNLOADING AND MOVING STUFF
-
+:::::DOWNLOADING:::::
 :DownloadingStuff
 cls
 IF %BASEDECIDE%==3 GOTO:EnterBaseCode
@@ -219,29 +168,24 @@ echo Testing Internet connection...
 C:\windows\system32\PING.EXE google.com
 if %errorlevel% GTR 0 goto:InternetSucks
 
-set /p TITLEKEY=<TitleKey.txt
 IF EXIST WORKDIR echo Cleaning up working directory from last failed conversion...
 IF EXIST WORKDIR rd /s /q WORKDIR
 SLEEP 1
-cd JNUSTool
-echo Downloading base files...
-rmdir /s /q %BASEFOLDER%
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /code/cos.xml
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /code/WUP-%BASEPDC%.rpx
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /content/.*
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /meta/Manual.bfma
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /meta/bootMovie.h264
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /meta/bootLogoTex.tga
-java -jar JNUSTool.jar %BASEID% %TITLEKEY% -file /meta/bootSound.btsnd
-
-:MovingStuff
-echo Moving to work directory...
-C:\Windows\System32\Robocopy.exe %BASEFOLDER% ..\WORKDIR\ /MIR
-rmdir /s /q %BASEFOLDER%
-cd ..
-IF NOT EXIST WORKDIR GOTO:ROBOFAIL
 cls
-GOTO:InjectingROM
+echo Downloading encrypted Base Files...
+mkdir WORKDIR
+cd WORKDIR
+call "../Tools/_General/Download/WiiUDownloader.exe" %BASEID% %TITLEKEY:~0,32% ENC
+goto:decryptFiles
+
+:decryptFiles
+cd ..
+cd Tools
+cd _General
+cd Download
+call CDecrypt.exe %COMMON% ..\..\..\WORKDIR\ENC ..\..\..\WORKDIR\
+rmdir /s /q ..\..\..\WORKDIR\ENC
+goto:InjectRom
 
 :EnterBaseCode
 cls
@@ -249,61 +193,68 @@ echo Please enter the 4-digit product code of your base.
 echo You can find it in either the meta.xml or cos.xml files.
 echo EXAMPLES: FAKP, FAAE, FAEJ
 set /p BASEPDC=[Base Product Code:] 
+goto:CopyBase
 
 :CopyBase
 cls
 echo Moving base to work directory...
-C:\Windows\System32\Robocopy.exe ..\..\..\Files\Base WORKDIR\ /MIR
+C:\Windows\System32\Robocopy.exe ..\..\..\..\Files\Base ..\..\..\WORKDIR\ /MIR
 IF NOT EXIST WORKDIR GOTO:ROBOFAIL
-rmdir /s /q ..\..\..\Files\Base
+rmdir /s /q ..\..\..\..\Files\Base
 cls
+goto:InjectRom
+:::::END DOWNLOADING:::::
 
-:: INJECTING ROM
-:InjectingROM
+
+:::::Injecting Game:::::
+:InjectRom
+cls
 echo Injecting ROM...
 cd ..
 cd ..
 cd ..
-cd Files
-IF EXIST iconTex.png (move iconTex.png ../Tools/png2tga)
-IF NOT EXIST bootDrcTex.png (copy bootTvTex.png bootDrcTex.png)
-IF EXIST bootTvTex.png (move bootTvTex.png ../Tools/png2tga)
-IF EXIST bootDrcTex.png (move bootDrcTex.png ../Tools/png2tga)
-IF EXIST bootLogoTex.png (move bootLogoTex.png ../Tools/png2tga)
-
-IF EXIST bootSound.wav echo bootSound detected. Do you want it to loop?
-IF EXIST bootSound.wav set /p AUDIODECIDE=[Y/N:]
-IF /i "%AUDIODECIDE%"=="n" set LOOP=-noLoop
-IF EXIST bootSound.wav ..\Tools\sox\sox.exe .\bootSound.wav -b 16 bootEdited.wav channels 2 rate 48k trim 0 6
-IF EXIST bootEdited.wav ..\Tools\wav2btsnd.jar -in bootEdited.wav -out bootSound.btsnd %LOOP%
-IF EXIST bootSound.wav (2>NUL del bootSound.wav)
-IF EXIST bootEdited.wav (2>NUL del bootEdited.wav)
-IF EXIST bootSound.btsnd (move bootSound.btsnd ../Tools/CONSOLES/NES/WORKDIR/meta/bootSound.btsnd)
-
-ren *.nes ROM.nes
 cd ..
-move Files\ROM.nes Tools\CONSOLES\NES\Injector\ROM.nes
-cd Tools
-cd CONSOLES
-cd NES
-move WORKDIR\code\WUP-%BASEPDC%.rpx Injector\WUP-%BASEPDC%.rpx
+cd Files
+::Checking Images
+IF EXIST ..\Tools\Tools\_General\Images\Input (rmdir /s /q ..\Tools\Tools\_General\Images\Input)
+mkdir ..\Tools\Tools\_General\Images\Input
+IF EXIST iconTex.png (move iconTex.png ..\Tools\Tools\_General\Images\Input)
+IF NOT EXIST bootDrcTex.png (copy bootTvTex.png bootDrcTex.png)
+IF EXIST bootTvTex.png (move bootTvTex.png ..\Tools\Tools\_General\Images\Input)
+IF EXIST bootDrcTex.png (move bootDrcTex.png ..\Tools\Tools\_General\Images\Input)
+IF EXIST bootLogoTex.png (move bootLogoTex.png ..\Tools\Tools\_General\Images\Input)
+ren *.nes ROM.nes
 
-cd Injector
-wiiurpxtool -d WUP-%BASEPDC%.rpx
-RetroInject.exe WUP-%BASEPDC%.rpx ROM.nes WUP-%BASEPDC%_new.rpx
-IF NOT EXIST WUP-%BASEPDC%_new.rpx GOTO:InjectError
+move ROM.nes "../Tools/Tools/SNES_NES/Injecting/ROM.nes"
+cd ..
+cd Tools
+cd WORKDIR
+Cd code
+move WUP-%BASEPDC%.rpx "../../Tools/SNES_NES/Injecting/WUP-%BASEPDC%.rpx"
+cd ..
+cd ..
+cd Tools
+cd SNES_NES
+cd Injecting
+call wiiurpxtool -d "WUP-%BASEPDC%.rpx"
+call RetroInject.exe "WUP-%BASEPDC%.rpx" "ROM.nes" "WUP-%BASEPDC%_new.rpx"
+ IF NOT EXIST WUP-%BASEPDC%_new.rpx GOTO:InjectError
 del /f /q WUP-%BASEPDC%.rpx
 ren WUP-%BASEPDC%_new.rpx WUP-%BASEPDC%.rpx
-wiiurpxtool -c WUP-%BASEPDC%.rpx
+wiiurpxtool -c "WUP-%BASEPDC%.rpx"
 del /f /q ROM.nes
-move WUP-%BASEPDC%.rpx ..\WORKDIR\code
-IF NOT EXIST ..\WORKDIR\code\WUP-%BASEPDC%.rpx GOTO:InjectError
+move WUP-%BASEPDC%.rpx "../../../WORKDIR/code"
+IF NOT EXIST "..\..\..\WORKDIR\code\WUP-%BASEPDC%.rpx" GOTO:InjectError
 cls
+goto:EditXMLs
+:::::END Injecting Game:::::
 
-:: EDITING APP.XML AND META.XML
 
+:::::Editing XMLs:::::
+:EditXMLs
 cd ..
-
+cd ..
+cd ..
 echo Generating app.xml...
 cd WORKDIR
 cd code
@@ -395,33 +346,6 @@ echo   ^<reserved_flag4 type="hexBinary" length="4"^>00000000^</reserved_flag4^>
 echo   ^<reserved_flag5 type="hexBinary" length="4"^>00000000^</reserved_flag5^>>>meta.xml
 echo   ^<reserved_flag6 type="hexBinary" length="4"^>00000000^</reserved_flag6^>>>meta.xml
 echo   ^<reserved_flag7 type="hexBinary" length="4"^>00000000^</reserved_flag7^>>>meta.xml
-IF %LINEDECIDE%==2 (
-echo   ^<longname_ja type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_ja^>>>meta.xml
-echo   ^<longname_en type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_en^>>>meta.xml
-echo   ^<longname_fr type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_fr^>>>meta.xml
-echo   ^<longname_de type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_de^>>>meta.xml
-echo   ^<longname_it type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_it^>>>meta.xml
-echo   ^<longname_es type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_es^>>>meta.xml
-echo   ^<longname_zhs type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_zhs^>>>meta.xml
-echo   ^<longname_ko type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_ko^>>>meta.xml
-echo   ^<longname_nl type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_nl^>>>meta.xml
-echo   ^<longname_pt type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_pt^>>>meta.xml
-echo   ^<longname_ru type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_ru^>>>meta.xml
-echo   ^<longname_zht type="string" length="512"^>%GAMENAME1%>>meta.xml
-echo %GAMENAME2%^</longname_zht^>>>meta.xml
-)
-IF %LINEDECIDE%==1 (
 echo   ^<longname_ja type="string" length="512"^>%GAMENAME%^</longname_ja^>>>meta.xml
 echo   ^<longname_en type="string" length="512"^>%GAMENAME%^</longname_en^>>>meta.xml
 echo   ^<longname_fr type="string" length="512"^>%GAMENAME%^</longname_fr^>>>meta.xml
@@ -434,7 +358,6 @@ echo   ^<longname_nl type="string" length="512"^>%GAMENAME%^</longname_nl^>>>met
 echo   ^<longname_pt type="string" length="512"^>%GAMENAME%^</longname_pt^>>>meta.xml
 echo   ^<longname_ru type="string" length="512"^>%GAMENAME%^</longname_ru^>>>meta.xml
 echo   ^<longname_zht type="string" length="512"^>%GAMENAME%^</longname_zht^>>>meta.xml
-)
 echo   ^<shortname_ja type="string" length="256"^>%GAMENAME%^</shortname_ja^>>>meta.xml
 echo   ^<shortname_en type="string" length="256"^>%GAMENAME%^</shortname_en^>>>meta.xml
 echo   ^<shortname_fr type="string" length="256"^>%GAMENAME%^</shortname_fr^>>>meta.xml
@@ -494,36 +417,64 @@ echo   ^<add_on_unique_id31 type="hexBinary" length="4"^>00000000^</add_on_uniqu
 echo ^</menu^>>>meta.xml
 SLEEP 1
 cls
+goto:InjectImages
+:::::END Editing XMLs:::::
 
-:: INJECTING IMAGES
-:InjectingImages
-cd ..
-cd ..
-cd ..
-cd ..
-cd png2tga
-echo Converting images to TGA...
-png2tgacmd.exe -i iconTex.png --width=128 --height=128 --tga-bpp=32 --tga-compression=none
-png2tgacmd.exe -i bootTvTex.png --width=1280 --height=720 --tga-bpp=24 --tga-compression=none
-png2tgacmd.exe -i bootDrcTex.png --width=854 --height=480 --tga-bpp=24 --tga-compression=none
-IF EXIST bootLogoTex.png (png2tgacmd.exe -i bootLogoTex.png --width=170 --height=42 --tga-bpp=32 --tga-compression=none)
-title Injectiine [NES]
-del /f /q iconTex.png
-del /f /q bootTvTex.png
-del /f /q bootDrcTex.png
-del /f /q bootLogoTex.png
-MetaVerifiy.py
-cls
-echo Moving images to meta folder...
-move iconTex.tga ..\CONSOLES\NES\WORKDIR\meta
-move bootTvTex.tga ..\CONSOLES\NES\WORKDIR\meta
-move bootDrcTex.tga ..\CONSOLES\NES\WORKDIR\meta
-2>NUL move bootLogoTex.tga ..\CONSOLES\NES\WORKDIR\meta
-cls
 
+:::::Injecting Images:::::
+:InjectImages
+cd ..
+cd ..
+cd Tools
+cd _General
+cd Images
+echo Converting images to TGA....
+IF EXIST Output ( rmdir /s /q Output)
+mkdir Output
+cd Input
+call "../png2tga.exe" iconTex.png "../Output/iconTex.tga"
+
+call "../png2tga.exe" bootTvTex.png "../Output/bootTvTex.tga"
+
+call "../png2tga.exe" bootDrcTex.png "../Output/bootDrcTex.tga"
+
+IF EXIST bootLogoTex.png (call "../png2tga.exe" bootLogoTex.png "../Output/bootLogoTex.tga")
+cd ..
+rmdir /s /q Input
+goto:VerifyImages
+
+:VerifyImages
+call tga_verify.exe "Output" ^| find /i "Error"
+
+if not errorlevel 1 (
+    goto:FixImages
+)
+goto:MoveImages
+
+:FixImages
+call tga_verify.exe --fixup "Output"
+
+goto:MoveImages
+
+:MoveImages
+cd Output
+IF EXIST iconTex.tga (move iconTex.tga "../../../../WORKDIR/meta/iconTex.tga")
+
+IF EXIST bootDrcTex.tga (move bootDrcTex.tga "../../../../WORKDIR/meta/bootDrcTex.tga")
+
+IF EXIST bootTvTex.tga (move bootTvTex.tga "../../../../WORKDIR/meta/bootTvTex.tga")
+
+IF EXIST bootLogoTex.tga (move bootLogoTex.tga "../../../../WORKDIR/meta/bootLogoTex.tga")
+cd ..
+rmdir /s /q Output
+
+:::::END Injecting Images:::::
+
+
+:::::Packing:::::
 :PackPrompt
 cls
-echo Do you want to pack the game using NUSPacker?
+echo Do you want to pack the game using CNUSPacker?
 echo If you don't wish to, the game will be created in Loadiine format.
 set /p PACKDECIDE=[Y/N:] 
 IF /i "%PACKDECIDE%"=="n" (GOTO:LoadiinePack)
@@ -532,35 +483,37 @@ GOTO:PackPrompt
 
 :LoadiinePack
 cls
-cd ../CONSOLES/NES
-cd ..
-move NES\WORKDIR ..\..\Output\"[NES] %GAMENAME% [%PRODUCTCODE%]"
+cd ../../../
+move WORKDIR "..\Output\[NES] %GAMENAME% [%PRODUCTCODE%]"
 GOTO:FinalCheckLoadiine
 
-:: PACK GAME
 :PackGame
 echo Packing game...
-cd ../CONSOLES/NES
-cd ..
-move NES\WORKDIR NES\NUSPacker\WORKDIR
-cd NES
-cd NUSPacker
-java -jar NUSPacker.jar -in WORKDIR -out "[NES] %GAMENAME% (000500001337%TITLEID%)"
+cd ../../../
+move WORKDIR "Tools/_General/Packing/WORKDIR"
+cd Tools
+cd _General
+cd Packing
+call CNUSPACKER -in WORKDIR -out "[NES] %GAMENAME% (000500001337%TITLEID%)" -encryptKeyWith %COMMON%
 rd /s /q tmp
 rd /s /q WORKDIR
 rd /s /q output
-move "[NES] %GAMENAME% (000500001337%TITLEID%)" ..\..\..\..\Output
+move "[NES] %GAMENAME% (000500001337%TITLEID%)" "../../../../Output"
+goto:FinalCheck
+:::::END Packing:::::
 
-:: Final check if game exists
+
+:::::Inject Checking:::::
 :FinalCheck
 cd ..\..\..\..\Output
 IF NOT EXIST "[NES] %GAMENAME% (000500001337%TITLEID%)" GOTO:GameError
 GOTO:GameComplete
-
 :FinalCheckLoadiine
-cd ..\..\Output
+
+cd ..\Output
 IF NOT EXIST "[NES] %GAMENAME% [%PRODUCTCODE%]" GOTO:LoadiineError
 GOTO:GameComplete
+:::::End Inject Checking:::::
 
 :GameComplete
 cls
@@ -580,8 +533,7 @@ echo Press any key to exit.
 pause>NUL
 exit
 
-:: ERRORS
-
+:::::ERRORS:::::
 :404ROMnotFound
 cls
 echo :::::::::
@@ -670,3 +622,4 @@ echo.
 echo Aborting in five seconds.
 SLEEP 5
 exit
+:::::END ERRORS:::::

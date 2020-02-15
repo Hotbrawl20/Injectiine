@@ -7,11 +7,11 @@ echo ::Welcome to Injectiine::
 echo :::::::::::::::::::::::::
 echo.
 echo Please select a console.
-echo NES  (1)
-echo SNES (2)
-echo N64  (3)
-echo GBA  (4)
-echo NDS  (5)
+echo NES  (1) 
+echo SNES (2) [BROKEN DO NOT USE]
+echo N64  (3) [BROKEN DO NOT USE]
+echo GBA  (4) [BROKEN DO NOT USE]
+echo NDS  (5) [BROKEN DO NOT USE]
 echo.
 set /p CHOICE=[Your Choice:] 
 if %CHOICE%==1 GOTO:NES
@@ -23,30 +23,25 @@ GOTO:Menu
 
 :NES
 cd CONSOLES
-cd NES
 call NES.bat
 exit
 
 :SNES
 cd CONSOLES
-cd SNES
 call SNES.bat
 exit
 
 :N64
 cd CONSOLES
-cd N64
 call N64.bat
 exit
 
 :GBA
 cd CONSOLES
-cd GBA
 call GBA.bat
 exit
 
 :NDS
 cd CONSOLES
-cd NDS
 call NDS.bat
 exit

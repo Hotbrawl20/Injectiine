@@ -4,8 +4,6 @@ Wii U Virtual Console batch injector originally created by CatmanFan.
 ## Features
 - Every console available throws out a functionable VC inject. Just make sure to check the [GBAtemp wiki compatibility lists first]() first.
 
-- Support for multi-line Titles
-
 - Downloadable bases
 
 - Support decrypted base supplied alongside images and ROM

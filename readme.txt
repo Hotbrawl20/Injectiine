@@ -7,8 +7,6 @@ Injectiine is a Wii U VC batch injector originally created by CatmanFan.
 == WHAT MAKES THIS USABLE ==
 -This actually works. Every console available throws out a functionable VC inject. Just make sure to check the GBAtemp wiki compatibility lists first.
 
--Support for multi-line titles!
-
 -Downloadable bases (NOTE: You will need the title key of the base you're downloading, the Wii U Common Key, and an Internet connection.)
 
 -Supports decrypted base supplied alongside images and ROM (NOTE: You will need the Wii U Common Key.)
