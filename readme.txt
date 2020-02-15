@@ -1,8 +1,8 @@
 ::::::::::::::::::::
-::INJECTIINE v1.23::
+::INJECTIINE v1.24::
 ::::::::::::::::::::
 
-Injectiine is a Wii U VC batch injector by CatmanFan.
+Injectiine is a Wii U VC batch injector originally created by CatmanFan.
 
 == WHAT MAKES THIS USABLE ==
 -This actually works. Every console available throws out a functionable VC inject. Just make sure to check the GBAtemp wiki compatibility lists first.
@@ -23,9 +23,9 @@ Injectiine is a Wii U VC batch injector by CatmanFan.
 
 -Supports custom GamePad/TV backgrounds for NDS VC
 
--Supports custom bootSound, bootTvTex, bootDrcTex, bootLogoTex and iconTex
+-Supports custom bootTvTex, bootDrcTex, bootLogoTex and iconTex
 
--Includes MetaVerify and automatically runs it when converting images to TGA
+-Includes Verficiation and fixing of your images when converting them to TGA (may or may not break the image when fixing)
 
 == HOW TO USE ==
 Using this injector is very simple.
@@ -59,4 +59,4 @@ Generated title ID is 1337xxxx.
 ALWAYS INSTALL TO USB IN CASE OF GAME CORRUPTION!
 
 == DISCLAIMER ==
-I do not own any of the tools packaged in this application. They all belong to their respective owners. Some of these instructions may not be detailed precisely so don't throw any hate comments at me lol.
+I do not own all of the tools packaged in this application. They all belong to their respective owners. Some of these instructions may not be detailed precisely so don't throw any hate comments at me lol.

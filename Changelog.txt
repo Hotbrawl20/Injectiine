@@ -1,3 +1,10 @@
+v1.24 (15/2/20)
+-First release by NicoAICP
+-Temporarily removed ability to create bootSounds
+-No Java or Python needed!
+-Updated readme
+-Updated folder structure
+
 v1.23 (18/12/17)
 -Added option to use custom backgrounds for GamePad/TV (NDS only)
 -Added custom bootLogoTex support
